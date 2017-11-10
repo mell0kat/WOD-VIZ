@@ -1,3 +1,4 @@
+const webpack = require('webpack')
 module.exports = {
 	entry: './src/index.tsx',
 	output: {
@@ -6,7 +7,8 @@ module.exports = {
 	},
 	devtool: 'source-map',
 	resolve: {
-		extensions: ['.ts', '.tsx', '.js', '.json']
+		extensions: ['*', '.ts', '.tsx', '.js', '.json', '.jsx'],
+		modules: ["node_modules"]
 	},
 	module: {
 		rules: [
@@ -16,11 +18,17 @@ module.exports = {
 			{
 				enforce: 'pre',
 				test: /\.js$/, loader: 'source-map-loader'
-			}
+			},
+			{ test: /\.json$/, loader: 'json-loader' }
 		]
 	},
 	externals: {
 		'react': 'React',
 		'react-dom': 'ReactDOM'
-	}
+	},
+	plugins: [
+        new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('development')
+        })
+    ],
 }

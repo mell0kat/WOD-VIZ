@@ -1,8 +1,17 @@
 import * as React from 'react'
+import { GOOGLE_SHEET_ID, GOOGLE_API_KEY } from '../../config'
 
-export interface HelloProps {
-	compiler: string;
-	framework: string;
-}
+import * as ReactGoogleSheetConnector from "react-google-sheet-connector"
 
-export const Hello = (props: HelloProps) => <h1>Hello from {props.compiler} and {props.framework}!</h1>
+import Comp from './Comp'
+
+console.log('MOD',ReactGoogleSheetConnector)
+export const Hello = () => <ReactGoogleSheetConnector
+    apiKey={GOOGLE_API_KEY}
+    spreadsheetId={GOOGLE_SHEET_ID}
+    spinner={ <div className="loading-spinner"/> } >
+    <div>
+    	This content will be rendered once the data has been fetched from the spreadsheet.
+	    <Comp/>
+    </div>
+</ReactGoogleSheetConnector>
