@@ -201,16 +201,51 @@ module.exports = ReactDOM;
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var config_1 = __webpack_require__(5);
 var ReactGoogleSheetConnector = __webpack_require__(1);
+var react_google_sheet_connector_1 = __webpack_require__(1);
 var Comp_1 = __webpack_require__(18);
+var RawData_1 = __webpack_require__(20);
 console.log('MOD', ReactGoogleSheetConnector);
-exports.Hello = function () { return React.createElement(ReactGoogleSheetConnector, { apiKey: config_1.GOOGLE_API_KEY, spreadsheetId: config_1.GOOGLE_SHEET_ID, spinner: React.createElement("div", { className: "loading-spinner" }) },
-    React.createElement("div", null,
-        "This content will be rendered once the data has been fetched from the spreadsheet.",
-        React.createElement(Comp_1.default, null))); };
+var Hello = /** @class */ (function (_super) {
+    __extends(Hello, _super);
+    function Hello() {
+        var _this = _super.call(this) || this;
+        _this.state = {
+            filter: undefined
+        };
+        _this.swapExercise = _this.swapExercise.bind(_this);
+        return _this;
+    }
+    Hello.prototype.swapExercise = function (exercise) {
+        this.setState({
+            filter: exercise
+        });
+        console.log('this.state', this.state);
+    };
+    Hello.prototype.render = function () {
+        return (React.createElement(ReactGoogleSheetConnector, { apiKey: config_1.GOOGLE_API_KEY, spreadsheetId: config_1.GOOGLE_SHEET_ID, spinner: React.createElement("div", { className: "loading-spinner" }) },
+            React.createElement("div", null,
+                "This content will be rendered once the data has been fetched from the spreadsheet.",
+                React.createElement(react_google_sheet_connector_1.GoogleSheet, { child: Comp_1.default, sheetName: "PartA", filter: this.state.filter, swapExercise: this.swapExercise, group: "Exercise", sort: "Column to Sort" },
+                    React.createElement(Comp_1.default, null)),
+                React.createElement(RawData_1.default, null))));
+    };
+    return Hello;
+}(React.Component));
+exports.Hello = Hello;
 
 
 /***/ }),
@@ -2284,17 +2319,100 @@ module.exports = gapi;
 
 "use strict";
 
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(0);
 var react_google_sheet_connector_1 = __webpack_require__(1);
+var utils_1 = __webpack_require__(21);
 var MyComponent = function (props) {
-    console.log('POPS', props);
-    return (React.createElement("div", null, props.getSheet("PartA")
-        .map(function (row, i) {
-        return JSON.stringify(row);
-    })));
+    var sheetData = props.getSheet("PartA");
+    console.log('sheetData', sheetData);
+    console.log('PROPS', props.data, props.filter);
+    return (React.createElement("div", null,
+        !props.filter &&
+            props.data.map(function (exerciseItem) { return (React.createElement("button", { onClick: function () { props.swapExercise({ exercise: exerciseItem.name }); }, key: exerciseItem.name, style: __assign({}, styles.button, { backgroundColor: utils_1.wordToRGBString(exerciseItem.name), borderColor: utils_1.wordToRGBStringDarkened(exerciseItem.name) }) }, exerciseItem.name)); }),
+        React.createElement("p", null,
+            "Ready to display ",
+            props.filter)));
+};
+console.log('RGB', utils_1.wordToRGBString('deadlift'));
+var styles = {
+    button: {
+        borderRadius: 5,
+        borderWidth: 4,
+    }
 };
 exports.default = react_google_sheet_connector_1.connectToSpreadsheet(MyComponent);
+
+
+/***/ }),
+/* 19 */,
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(0);
+var react_google_sheet_connector_1 = __webpack_require__(1);
+exports.default = function () { return (React.createElement("div", null,
+    React.createElement("p", null, "Raw Data"),
+    React.createElement(react_google_sheet_connector_1.GoogleTable, { sheetName: "PartA" }))); };
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var RGB;
+(function (RGB) {
+    RGB[RGB["r"] = 0] = "r";
+    RGB[RGB["g"] = 1] = "g";
+    RGB[RGB["b"] = 2] = "b";
+})(RGB || (RGB = {}));
+var RGBToLetter = {
+    r: {
+        min: 0,
+        max: 7,
+    },
+    g: {
+        min: 8,
+        max: 16,
+    },
+    b: {
+        min: 17,
+        max: 25,
+    },
+};
+var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+var wordToColor = function (word, rgb, darken) {
+    var instances = 0;
+    word.split('').forEach(function (letter) {
+        if (alphabet.indexOf(letter) >= RGBToLetter[rgb].min &&
+            alphabet.indexOf(letter) <= RGBToLetter[rgb].max) {
+            instances++;
+        }
+    });
+    if (instances === 0)
+        return 0;
+    return Math.floor((instances / word.length) * 255) + (darken ? 40 : 0);
+};
+exports.wordToRGBString = function (word) {
+    return "rgb(" + wordToColor(word, 'r') + "," + wordToColor(word, 'g') + "," + wordToColor(word, 'b') + ")";
+};
+exports.wordToRGBStringDarkened = function (word) {
+    return "rgb(" + wordToColor(word, 'r', true) + "," + wordToColor(word, 'g', true) + "," + wordToColor(word, 'b', true) + ")";
+};
 
 
 /***/ })
