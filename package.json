@@ -7,15 +7,20 @@
   "dependencies": {
     "@types/react": "^16.0.5",
     "@types/react-dom": "^15.5.4",
+    "moment": "^2.19.2",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-google-sheet-connector": "^1.0.1",
     "webpack": "^3.6.0"
   },
   "devDependencies": {
+    "@types/moment": "^2.13.0",
     "awesome-typescript-loader": "^3.2.3",
     "json-loader": "^0.5.7",
     "source-map-loader": "^0.2.1",
     "typescript": "^2.5.2"
+  },
+  "scripts": {
+    "start": "webpack --watch && tsc --watch"
   }
 }

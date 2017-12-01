@@ -7,8 +7,7 @@ module.exports = {
 	},
 	devtool: 'source-map',
 	resolve: {
-		extensions: ['*', '.ts', '.tsx', '.js', '.json', '.jsx'],
-		modules: ["node_modules"]
+		extensions: ['.ts', '.tsx', '.js', '.json', '.jsx']
 	},
 	module: {
 		rules: [
@@ -17,14 +16,11 @@ module.exports = {
 			},
 			{
 				enforce: 'pre',
-				test: /\.js$/, loader: 'source-map-loader'
+				test: /\.js$/,
+				loader: 'source-map-loader',
 			},
 			{ test: /\.json$/, loader: 'json-loader' }
 		]
-	},
-	externals: {
-		'react': 'React',
-		'react-dom': 'ReactDOM'
 	},
 	plugins: [
         new webpack.DefinePlugin({
