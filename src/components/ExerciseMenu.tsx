@@ -24,7 +24,7 @@ const ExerciseMenu = (props: IProps) => {
 						}}
 						key={exerciseItem.name}
 						style={{...styles.button, borderColor: color, color: color}}>
-						{exerciseItem.name}
+							{exerciseItem.name}
 					</button>
 					)
 				})

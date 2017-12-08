@@ -43,6 +43,13 @@ export class Main extends React.Component<any, IState> {
 				spinner={ <div className="loading-spinner"/> } >
 				<div>
 					<div style={{ flexDirection: 'row', display: 'flex'}}>
+					<GoogleSheet
+						child={ExerciseMenu}
+						sheetName="PartA"
+						group="Exercise"
+						swapExercise={this.swapExercise}
+						swapFeaturedColor={this.swapFeaturedColor}
+					/>
 					{this.state.filter &&
 						<GoogleSheet
 							child={SingleExercise}
@@ -54,13 +61,6 @@ export class Main extends React.Component<any, IState> {
 							exerciseColor={this.state.exerciseColor}
 						/>
 					}
-					<GoogleSheet
-						child={ExerciseMenu}
-						sheetName="PartA"
-						group="Exercise"
-						swapExercise={this.swapExercise}
-						swapFeaturedColor={this.swapFeaturedColor}
-					/>
 				</div>
 				<RawData/>
 			</div>

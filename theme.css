@@ -1,0 +1,9 @@
+@font-face {
+    font-family: BaseFont;
+    src: url('./assets/teen/teen.ttf');
+}
+
+body {
+	font-family: 'BaseFont', sans-serif;
+	background-color: black;
+}

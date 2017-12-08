@@ -2,21 +2,23 @@ import * as React from 'react'
 import * as Moment from 'moment'
 import { connectToSpreadsheet } from "react-google-sheet-connector"
 
-const xWidth = 250
+const xWidth = 350
 const yHeight = 250
-const barWidth = 20
 
-const computeBarStyle = (color, width) => ({
+const computeBarStyle = (color) => ({
 	backgroundColor: color,
-	width,
 })
 
 const getTitleColor = (color) => ({ color })
 
-const getBarXPosition = (datum, dateRange, minDate, _x) => {
+const getBarXPosition = (datum, dateRange, minDate, _x, smallestDx, idx, rotate?) => {
 	const dx: number = ((Moment(datum.date) - Moment(minDate)) / dateRange) * _x
+	const width: number = (smallestDx / dateRange) * _x
+	console.log('width', width)
 	return {
-		transform: `translate(${dx}px, 0px)`,
+		left: dx - (width * idx),
+		transform: `${(rotate ? 'rotate(90deg)' : '')}`,
+		width: !rotate && width ,
 	}
 }
 
@@ -28,26 +30,35 @@ interface IExerciseRow {
 }
 
 const minMaxWeight: number[] = (data) => data.reduce((acc: number, currentVal: IExerciseRow) => {
-	const nextVal = []
 
-	if (currentVal['weight (lbs)'] < acc[0]) {
-		nextVal[0] = currentVal['weight (lbs)']
+	const nextVal = [] // 93, 95.5  105.5
+	const thisVal = currentVal['weight (lbs)']
+	const currentMin = +(acc[0])
+	const currentMax = +(acc[1])
+
+	if (thisVal < currentMin) {
+		nextVal[0] = thisVal
 
 	} else {
-		nextVal[0] = acc[0]
+		nextVal[0] = currentMin
 	}
 
-	if (currentVal['weight (lbs)'] > acc[1]){
-		nextVal[1] = currentVal['weight (lbs)']
+	if (thisVal > currentMax) {
+		nextVal[1] = thisVal
 	}else {
-		nextVal[1] = acc[1]
+		nextVal[1] = currentMax
 	}
 	return nextVal
 }, [1000, 0])
 
 const getBarHeight = (datum: IExerciseRow, data, _y) => {
 	const [minWeight, maxWeight] = minMaxWeight(data)
-	const dy = (datum['weight (lbs)'] - minWeight) / (maxWeight - minWeight) * _y
+
+	const range = maxWeight - minWeight
+	const padding = 1.5 * range
+
+	const dy = ((datum['weight (lbs)'] - minWeight + (0.5 * padding)) / (maxWeight - minWeight + padding)) * _y
+
 	return {
 		height: dy,
 	}
@@ -62,34 +73,63 @@ const SingleExercise = (props: IProps) => {
 	const { data, exerciseColor } = props
 	const exerciseData = data[0]
 
-
+	const dateRange = differenceInDates(exerciseData.data)
+	const smallestDx = smallestDiff(exerciseData.data)
+	console.log('smallestDx', exerciseData.data)
 	return (
 		<div style={styles.container}>
-			<p style={{ ...styles.title, ...getTitleColor(exerciseColor) }}>{exerciseData.name.toUpperCase()}</p>
-			{JSON.stringify(exerciseData.data)}
-			<div style={styles.barGraph}>
+			<p style={{ ...styles.title, ...getTitleColor(exerciseColor) }}>{exerciseData.name}</p>
+			<p style={{ padding: 0, margin: 0, color: 'white'}}>{JSON.stringify(exerciseData.data)}</p>
+			<div style={{...styles.barGraph, paddingRight: (smallestDx / dateRange * xWidth)}}>
 				{
-					exerciseData.data.map(datum => (
+					exerciseData.data.map((datum, idx) => (
 						<div
-							key={datum.date}
-							style={{...computeBarStyle(exerciseColor, barWidth), ...getBarXPosition(datum, differenceInDates(exerciseData.data), exerciseData.data[0][0], xWidth), ...getBarHeight(datum, exerciseData.data, yHeight)}}
-						/>
+							key={`${datum.date}${datum.reps}`}
+							style={{...styles.bar, ...computeBarStyle(exerciseColor), ...getBarXPosition(datum, dateRange, exerciseData.data[0][0], xWidth, smallestDx, idx), ...getBarHeight(datum, exerciseData.data, yHeight)}}
+						>
+						<p style={styles.label}>{datum['weight (lbs)']}</p>
+						</div>
 					))
+				}
+			</div>
+			<div style={{width: xWidth}}>
+				{
+					exerciseData.data.map((datum, idx) => (
+						<text
+							key={`${datum.date}${datum.reps}`}
+							style={{...getBarXPosition(datum, dateRange, exerciseData.data[0][0], xWidth, smallestDx, idx, true), color: 'white', fontSize: 12, display: 'inline-block'}}>{Moment(datum.date).format('MMMM Do')}</text>))
 				}
 			</div>
 		</div>
 	)
 }
 
-const differenceInDates = (rows) => {
-	const first = (Moment(rows[0][0]))
-	const last = (Moment(rows[rows.length - 1][0]))
+const differenceInDates = (rows: IExerciseRow[]) => {
+	const first = (Moment(rows[0].date))
+	const last = (Moment(rows[rows.length - 1].date))
 	return (last - first)
 }
+
+const smallestDiff = (rows: IExerciseRow[]) => rows.reduce(
+	(acc, currentVal, currentIdx, array) => {
+
+		const nextRow = array[currentIdx + 1]
+		if (!nextRow) { return acc }
+		const diff = Math.abs(Moment(nextRow.date) - Moment(currentVal.date))
+	console.log('diff', diff, nextRow.date, currentVal.date)
+		if (diff < acc) {
+			return diff
+		} else {
+			return acc
+		}
+	},
+	Infinity,
+)
 
 const styles = {
 	title: {
 		fontSize: 24,
+		fontFamily: 'BaseFont'
 	},
 	button: {
 		backgroundColor: 'transparent',
@@ -104,10 +144,21 @@ const styles = {
 		borderBottomStyle: 'solid',
 		borderLeftWidth: 2,
 		borderBottomWidth: 2,
-		borderColor: 'black',
+		borderColor: 'white',
 		alignSelf: 'center',
+		//paddingLeft: .5 * barWidth,
+		// paddingRight: .5 * barWidth,
 		display: 'flex',
 		alignItems: 'flex-end',
+		position: 'relative',
+	},
+	bar: {
+		display: 'inline-block',
+		position: 'relative',
+	},
+	label: {
+		fontSize: 8,
+		textAlign: 'center',
 	},
 	container: {
 		flex: 1,
