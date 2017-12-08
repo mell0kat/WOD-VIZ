@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as Moment from 'moment'
 import { connectToSpreadsheet } from "react-google-sheet-connector"
 
-const xWidth = 350
+const xWidth = 450
 const yHeight = 250
 
 const computeBarStyle = (color) => ({
@@ -13,10 +13,10 @@ const getTitleColor = (color) => ({ color })
 
 const getBarXPosition = (datum, dateRange, minDate, _x, smallestDx, idx, rotate?) => {
 	const dx: number = ((Moment(datum.date) - Moment(minDate)) / dateRange) * _x
-	const width: number = (smallestDx / dateRange) * _x
+	const width: number = (smallestDx / dateRange) * _x *.75
 	console.log('width', width)
 	return {
-		left: dx - (width * idx),
+		left: dx,
 		transform: `${(rotate ? 'rotate(90deg)' : '')}`,
 		width: !rotate && width ,
 	}
@@ -92,12 +92,9 @@ const SingleExercise = (props: IProps) => {
 					))
 				}
 			</div>
-			<div style={{width: xWidth}}>
+			<div style={{width: xWidth, position:'relative'}}>
 				{
-					exerciseData.data.map((datum, idx) => (
-						<text
-							key={`${datum.date}${datum.reps}`}
-							style={{...getBarXPosition(datum, dateRange, exerciseData.data[0][0], xWidth, smallestDx, idx, true), color: 'white', fontSize: 12, display: 'inline-block'}}>{Moment(datum.date).format('MMMM Do')}</text>))
+					monthMarkers(exerciseData.data, dateRange, smallestDx)
 				}
 			</div>
 		</div>
@@ -105,9 +102,27 @@ const SingleExercise = (props: IProps) => {
 }
 
 const differenceInDates = (rows: IExerciseRow[]) => {
+	console.log('Start moonth', Moment(rows[0].date).startOf('month'))
 	const first = (Moment(rows[0].date))
 	const last = (Moment(rows[rows.length - 1].date))
 	return (last - first)
+}
+
+const monthMarkers = (rows: IExerciseRow[], dateRange, smallestDx) => {
+
+	const markers = []
+	Moment(rows[0].date).startOf('month'))
+	let markerPoint = Moment(rows[0].date).startOf('month')
+	let idx = 0
+	while (markerPoint < Moment(rows[rows.length - 1].date)) {
+		markers.push(<text
+			key={`${markerPoint}`}
+			style={{...getBarXPosition({ date: markerPoint }, dateRange, rows[0][0], xWidth, smallestDx, idx), color: 'white', fontSize: 12, display: 'inline-block', position: 'absolute'}}>{Moment(markerPoint).format('MMM')}
+			</text>)
+		markerPoint = markerPoint.add(1, 'month')
+		idx++
+	}
+	return markers
 }
 
 const smallestDiff = (rows: IExerciseRow[]) => rows.reduce(
@@ -154,11 +169,12 @@ const styles = {
 	},
 	bar: {
 		display: 'inline-block',
-		position: 'relative',
+		position: 'absolute',
 	},
 	label: {
 		fontSize: 8,
 		textAlign: 'center',
+		color: 'white',
 	},
 	container: {
 		flex: 1,

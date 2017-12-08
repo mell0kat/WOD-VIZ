@@ -39417,7 +39417,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(14);
 var Moment = __webpack_require__(0);
 var react_google_sheet_connector_1 = __webpack_require__(25);
-var xWidth = 350;
+var xWidth = 450;
 var yHeight = 250;
 var computeBarStyle = function (color) { return ({
     backgroundColor: color,
@@ -39425,10 +39425,10 @@ var computeBarStyle = function (color) { return ({
 var getTitleColor = function (color) { return ({ color: color }); };
 var getBarXPosition = function (datum, dateRange, minDate, _x, smallestDx, idx, rotate) {
     var dx = ((Moment(datum.date) - Moment(minDate)) / dateRange) * _x;
-    var width = (smallestDx / dateRange) * _x;
+    var width = (smallestDx / dateRange) * _x * .75;
     console.log('width', width);
     return {
-        left: dx - (width * idx),
+        left: dx,
         transform: "" + (rotate ? 'rotate(90deg)' : ''),
         width: !rotate && width,
     };
@@ -39472,12 +39472,25 @@ var SingleExercise = function (props) {
         React.createElement("p", { style: { padding: 0, margin: 0, color: 'white' } }, JSON.stringify(exerciseData.data)),
         React.createElement("div", { style: __assign({}, styles.barGraph, { paddingRight: (smallestDx / dateRange * xWidth) }) }, exerciseData.data.map(function (datum, idx) { return (React.createElement("div", { key: "" + datum.date + datum.reps, style: __assign({}, styles.bar, computeBarStyle(exerciseColor), getBarXPosition(datum, dateRange, exerciseData.data[0][0], xWidth, smallestDx, idx), getBarHeight(datum, exerciseData.data, yHeight)) },
             React.createElement("p", { style: styles.label }, datum['weight (lbs)']))); })),
-        React.createElement("div", { style: { width: xWidth } }, exerciseData.data.map(function (datum, idx) { return (React.createElement("text", { key: "" + datum.date + datum.reps, style: __assign({}, getBarXPosition(datum, dateRange, exerciseData.data[0][0], xWidth, smallestDx, idx, true), { color: 'white', fontSize: 12, display: 'inline-block' }) }, Moment(datum.date).format('MMMM Do'))); }))));
+        React.createElement("div", { style: { width: xWidth, position: 'relative' } }, monthMarkers(exerciseData.data, dateRange, smallestDx))));
 };
 var differenceInDates = function (rows) {
+    console.log('Start moonth', Moment(rows[0].date).startOf('month'));
     var first = (Moment(rows[0].date));
     var last = (Moment(rows[rows.length - 1].date));
     return (last - first);
+};
+var monthMarkers = function (rows, dateRange, smallestDx) {
+    var markers = [];
+    Moment(rows[0].date).startOf('month');
+    var markerPoint = Moment(rows[0].date).startOf('month');
+    var idx = 0;
+    while (markerPoint < Moment(rows[rows.length - 1].date)) {
+        markers.push(React.createElement("text", { key: "" + markerPoint, style: __assign({}, getBarXPosition({ date: markerPoint }, dateRange, rows[0][0], xWidth, smallestDx, idx), { color: 'white', fontSize: 12, display: 'inline-block', position: 'absolute' }) }, Moment(markerPoint).format('MMM')));
+        markerPoint = markerPoint.add(1, 'month');
+        idx++;
+    }
+    return markers;
 };
 var smallestDiff = function (rows) { return rows.reduce(function (acc, currentVal, currentIdx, array) {
     var nextRow = array[currentIdx + 1];
@@ -39521,11 +39534,12 @@ var styles = {
     },
     bar: {
         display: 'inline-block',
-        position: 'relative',
+        position: 'absolute',
     },
     label: {
         fontSize: 8,
         textAlign: 'center',
+        color: 'white',
     },
     container: {
         flex: 1,
