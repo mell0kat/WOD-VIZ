@@ -48,3 +48,17 @@ export const wordToRGBString = (word: string): string => {
 export const wordToRGBStringDarkened = (word: string): string => {
 	return `rgb(${wordToColor(word, RGB.r, true)},${wordToColor(word, RGB.g, true)},${wordToColor(word, RGB.b, true)})`
 }
+
+const brzyckiFormulaCoefficients = [0, 1, 1.029, 1.059, 1.091, 1.125,
+1.161, 1.200, 1.242, 1.286, 1.330]
+
+// The Brzycki Formula
+export const calculate1RM = (reps: number, weight: number) => {
+	console.log('RESP', reps, weight)
+	const coeff = brzyckiFormulaCoefficients[reps]
+	if (!coeff) {
+		console.error(`Formula has not been set up to handle ${reps} reps`)
+	} else {
+		return Math.floor(coeff * weight)
+	}
+}

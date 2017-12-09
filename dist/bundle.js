@@ -39397,6 +39397,19 @@ exports.wordToRGBString = function (word) {
 exports.wordToRGBStringDarkened = function (word) {
     return "rgb(" + wordToColor(word, RGB.r, true) + "," + wordToColor(word, RGB.g, true) + "," + wordToColor(word, RGB.b, true) + ")";
 };
+var brzyckiFormulaCoefficients = [0, 1, 1.029, 1.059, 1.091, 1.125,
+    1.161, 1.200, 1.242, 1.286, 1.330];
+// The Brzycki Formula
+exports.calculate1RM = function (reps, weight) {
+    console.log('RESP', reps, weight);
+    var coeff = brzyckiFormulaCoefficients[reps];
+    if (!coeff) {
+        console.error("Formula has not been set up to handle " + reps + " reps");
+    }
+    else {
+        return Math.floor(coeff * weight);
+    }
+};
 
 
 /***/ }),
@@ -39405,6 +39418,16 @@ exports.wordToRGBStringDarkened = function (word) {
 
 "use strict";
 
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -39418,15 +39441,17 @@ var React = __webpack_require__(14);
 var Moment = __webpack_require__(0);
 var react_google_sheet_connector_1 = __webpack_require__(25);
 var styled_components_1 = __webpack_require__(318);
+var utils_1 = __webpack_require__(313);
 var X_AXIS = 450;
 var Y_AXIS = 250;
 var BarGraph = (_a = ["\n\twidth: ", "px;\n\theight: ", "px;\n\tborder-left: white 2px solid;\n\tborder-bottom: white 2px solid;\n\talign-self: center;\n\tdisplay: flex;\n\talign-items: flex-end;\n\tposition: relative;\n\tpadding-right: ", "px\n"], _a.raw = ["\n\twidth: ", "px;\n\theight: ", "px;\n\tborder-left: white 2px solid;\n\tborder-bottom: white 2px solid;\n\talign-self: center;\n\tdisplay: flex;\n\talign-items: flex-end;\n\tposition: relative;\n\tpadding-right: ", "px\n"], styled_components_1.default.div(_a, X_AXIS, Y_AXIS, function (props) { return (props.smallestDx / props.dateRange * X_AXIS); }));
 var Title = (_b = ["\n\tfont-size: 24px;\n\tfont-family: BaseFont;\n\tcolor: ", ";\n"], _b.raw = ["\n\tfont-size: 24px;\n\tfont-family: BaseFont;\n\tcolor: ", ";\n"], styled_components_1.default.p(_b, function (props) { return props.color; }));
 var Label = (_c = ["\n\tfont-size: 8px;\n\ttext-align: center;\n\tcolor: white;\n"], _c.raw = ["\n\tfont-size: 8px;\n\ttext-align: center;\n\tcolor: white;\n"], styled_components_1.default.text(_c));
-var Bar = (_d = ["\n\tdisplay: inline-block;\n\tposition: absolute;\n\tbackground-color: ", ";\n\theight: ", "px;\n"], _d.raw = ["\n\tdisplay: inline-block;\n\tposition: absolute;\n\tbackground-color: ", ";\n\theight: ", "px;\n"], styled_components_1.default.div(_d, function (props) { return props.exerciseColor; }, function (props) { return getBarHeight(props.datum, props.rows, props.yAxis); }));
-var BarGraphContainer = (_e = ["\n\tflex: 1;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n"], _e.raw = ["\n\tflex: 1;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n"], styled_components_1.default.div(_e));
-var MarkerContainer = (_f = ["\n\twidth: ", "px;\n\tposition: relative;\n"], _f.raw = ["\n\twidth: ", "px;\n\tposition: relative;\n"], styled_components_1.default.div(_f, X_AXIS));
-var Marker = (_g = ["\n\tcolor: white;\n\tfontsize: 12;\n\tdisplay: inline-block;\n\tposition: absolute;\n"], _g.raw = ["\n\tcolor: white;\n\tfontsize: 12;\n\tdisplay: inline-block;\n\tposition: absolute;\n"], styled_components_1.default.text(_g));
+var Bar = (_d = ["\n\tdisplay: inline-block;\n\tposition: absolute;\n\tbackground-color: ", ";\n\theight: ", "px;\n"], _d.raw = ["\n\tdisplay: inline-block;\n\tposition: absolute;\n\tbackground-color: ", ";\n\theight: ", "px;\n"], styled_components_1.default.div(_d, function (props) { return props.exerciseColor; }, function (props) { return getBarHeight(props.datum, props.rows, props.yAxis, false); }));
+var OneRMBar = (_e = ["\n\theight: ", "px;\n"], _e.raw = ["\n\theight: ", "px;\n"], Bar.extend(_e, function (props) { return getBarHeight(props.datum, props.rows, props.yAxis, true); }));
+var BarGraphContainer = (_f = ["\n\tflex: 1;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n"], _f.raw = ["\n\tflex: 1;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n"], styled_components_1.default.div(_f));
+var MarkerContainer = (_g = ["\n\twidth: ", "px;\n\tposition: relative;\n"], _g.raw = ["\n\twidth: ", "px;\n\tposition: relative;\n"], styled_components_1.default.div(_g, X_AXIS));
+var Marker = (_h = ["\n\tcolor: white;\n\tfontsize: 12;\n\tdisplay: inline-block;\n\tposition: absolute;\n"], _h.raw = ["\n\tcolor: white;\n\tfontsize: 12;\n\tdisplay: inline-block;\n\tposition: absolute;\n"], styled_components_1.default.text(_h));
 var getBarXPosition = function (datum, dateRange, minDate, _x, smallestDx, idx, rotate) {
     var dx = ((Moment(datum.date) - Moment(minDate)) / dateRange) * _x;
     var width = (smallestDx / dateRange) * _x * .75;
@@ -39455,26 +39480,55 @@ var minMaxWeight = function (data) { return data.reduce(function (acc, currentVa
     }
     return nextVal;
 }, [1000, 0]); };
-var getBarHeight = function (datum, data, _y) {
+var getBarHeight = function (datum, data, _y, projectedOneRM) {
     var _a = minMaxWeight(data), minWeight = _a[0], maxWeight = _a[1];
     var range = maxWeight - minWeight;
     var padding = 1.5 * range;
-    var dy = ((datum['weight (lbs)'] - minWeight + (0.5 * padding)) / (maxWeight - minWeight + padding)) * _y;
+    var weight = projectedOneRM ? utils_1.calculate1RM(datum.reps, datum['weight (lbs)']) : datum['weight (lbs)'];
+    var dy = ((weight - minWeight + (0.5 * padding)) / (maxWeight - minWeight + padding)) * _y;
     return dy;
 };
-var SingleExercise = function (props) {
-    var data = props.data, exerciseColor = props.exerciseColor;
-    var exerciseData = data[0];
-    var dateRange = differenceInDates(exerciseData.data);
-    var smallestDx = smallestDiff(exerciseData.data);
-    console.log('smallestDx', exerciseData.data);
-    return (React.createElement(BarGraphContainer, null,
-        React.createElement(Title, { color: exerciseColor }, exerciseData.name),
-        React.createElement("p", { style: { padding: 0, margin: 0, color: 'white' } }, JSON.stringify(exerciseData.data)),
-        React.createElement(BarGraph, { smallestDx: smallestDx, dateRange: dateRange }, exerciseData.data.map(function (datum, idx) { return (React.createElement(Bar, { key: "" + datum.date + datum.reps, exerciseColor: exerciseColor, datum: datum, rows: exerciseData.data, yAxis: Y_AXIS, dateRange: dateRange, smallestDx: smallestDx, style: __assign({}, getBarXPosition(datum, dateRange, exerciseData.data[0][0], X_AXIS, smallestDx, idx)) },
-            React.createElement(Label, null, datum['weight (lbs)']))); })),
-        React.createElement(MarkerContainer, null, monthMarkers(exerciseData.data, dateRange, smallestDx))));
-};
+var SingleExercise = /** @class */ (function (_super) {
+    __extends(SingleExercise, _super);
+    function SingleExercise() {
+        var _this = _super.call(this) || this;
+        _this.state = {
+            viewMode: 'default',
+        };
+        _this.toggleMode = _this.toggleMode.bind(_this);
+        return _this;
+    }
+    SingleExercise.prototype.toggleMode = function (mode) {
+        this.setState({
+            viewMode: mode,
+        });
+    };
+    SingleExercise.prototype.render = function () {
+        var _this = this;
+        var _a = this.props, data = _a.data, exerciseColor = _a.exerciseColor;
+        var exerciseData = data[0];
+        var dateRange = differenceInDates(exerciseData.data);
+        var smallestDx = smallestDiff(exerciseData.data);
+        console.log('smallestDx', exerciseData.data);
+        return (React.createElement(BarGraphContainer, null,
+            React.createElement(Title, { color: exerciseColor }, exerciseData.name),
+            React.createElement("p", { style: { padding: 0, margin: 0, color: 'white' } }, JSON.stringify(exerciseData.data)),
+            React.createElement("div", null,
+                React.createElement("input", { type: "radio", id: "default", name: "default", value: "default", checked: this.state.viewMode === "default", onChange: function () { _this.toggleMode('default'); } }),
+                React.createElement("label", { htmlFor: "default" }, "Reps as input"),
+                React.createElement("input", { type: "radio", id: "projected1RM", name: "projected1RM", value: "phone", checked: this.state.viewMode === "projected1RM", onChange: function () { _this.toggleMode('projected1RM'); } }),
+                React.createElement("label", { htmlFor: "projected1RM" }, "Projected 1RM")),
+            React.createElement(BarGraph, { smallestDx: smallestDx, dateRange: dateRange }, (this.state.viewMode === 'default')
+                ?
+                    exerciseData.data.map(function (datum, idx) { return (React.createElement(Bar, { key: "" + datum.date + datum.reps, exerciseColor: exerciseColor, datum: datum, rows: exerciseData.data, yAxis: Y_AXIS, dateRange: dateRange, smallestDx: smallestDx, style: __assign({}, getBarXPosition(datum, dateRange, exerciseData.data[0][0], X_AXIS, smallestDx, idx)) },
+                        React.createElement(Label, null, datum['weight (lbs)']))); })
+                :
+                    exerciseData.data.map(function (datum, idx) { return (React.createElement(OneRMBar, { key: "" + datum.date + datum.reps, exerciseColor: exerciseColor, datum: datum, rows: exerciseData.data, yAxis: Y_AXIS, dateRange: dateRange, smallestDx: smallestDx, style: __assign({}, getBarXPosition(datum, dateRange, exerciseData.data[0][0], X_AXIS, smallestDx, idx)) },
+                        React.createElement(Label, null, utils_1.calculate1RM(datum.reps, datum['weight (lbs)'])))); })),
+            React.createElement(MarkerContainer, null, monthMarkers(exerciseData.data, dateRange, smallestDx))));
+    };
+    return SingleExercise;
+}(React.Component));
 var differenceInDates = function (rows) {
     console.log('Start moonth', Moment(rows[0].date).startOf('month'));
     var first = (Moment(rows[0].date));
@@ -39483,8 +39537,7 @@ var differenceInDates = function (rows) {
 };
 var monthMarkers = function (rows, dateRange, smallestDx) {
     var markers = [];
-    Moment(rows[0].date).startOf('month');
-    var markerPoint = Moment(rows[0].date).startOf('month');
+    var markerPoint = (Moment(rows[0].date).date() > 15) ? Moment(rows[0].date).startOf('month').add(1, 'month') : Moment(rows[0].date).startOf('month');
     var idx = 0;
     while (markerPoint < Moment(rows[rows.length - 1].date)) {
         markers.push(React.createElement(Marker, { key: "" + markerPoint, style: getBarXPosition({ date: markerPoint }, dateRange, rows[0][0], X_AXIS, smallestDx, idx) }, Moment(markerPoint).format('MMM')));
@@ -39507,7 +39560,7 @@ var smallestDiff = function (rows) { return rows.reduce(function (acc, currentVa
     }
 }, Infinity); };
 exports.default = react_google_sheet_connector_1.connectToSpreadsheet(SingleExercise);
-var _a, _b, _c, _d, _e, _f, _g;
+var _a, _b, _c, _d, _e, _f, _g, _h;
 
 
 /***/ }),
