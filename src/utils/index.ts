@@ -54,10 +54,10 @@ const brzyckiFormulaCoefficients = [0, 1, 1.029, 1.059, 1.091, 1.125,
 
 // The Brzycki Formula
 export const calculate1RM = (reps: number, weight: number) => {
-	console.log('RESP', reps, weight)
 	const coeff = brzyckiFormulaCoefficients[reps]
 	if (!coeff) {
 		console.error(`Formula has not been set up to handle ${reps} reps`)
+		return weight
 	} else {
 		return Math.floor(coeff * weight)
 	}

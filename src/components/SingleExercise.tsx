@@ -19,9 +19,13 @@ const BarGraph = styled.div`
 	padding-right: ${props => (props.smallestDx / props.dateRange * X_AXIS)}px
 `
 
+const CheckboxLabel = styled.span`
+	color: white;
+	font-family: HeaderFont;
+`
 const Title = styled.p`
 	font-size: 24px;
-	font-family: BaseFont;
+	font-family: HeaderFont;
 	color: ${props => props.color};
 `
 
@@ -29,6 +33,8 @@ const Label = styled.text`
 	font-size: 8px;
 	text-align: center;
 	color: white;
+	position: relative;
+	bottom: 20px;
 `
 const Bar = styled.div`
 	display: inline-block;
@@ -58,13 +64,22 @@ const Marker = styled.text`
 	display: inline-block;
 	position: absolute;
 `
-const getBarXPosition = (datum, dateRange, minDate, _x, smallestDx, idx, rotate?) => {
-	const dx: number = ((Moment(datum.date) - Moment(minDate)) / dateRange) * _x
+
+const YAxisLabel = styled.p`
+	transform: rotate(270deg);
+	color: white;
+	position: relative;
+	right: 70px;
+	bottom: ${Y_AXIS / 3}px;
+`
+
+const getBarXPosition = (datum, dateRange, minDate, _x, smallestDx) => {
+	console.log(datum, minDate, dateRange, _x)
+	const dx: number = (dateRange === 0) ? (_x / 2) : ((Moment(datum.date) - Moment(minDate)) / dateRange) * _x
 	const width: number = (smallestDx / dateRange) * _x *.75
 	return {
 		left: dx,
-		transform: `${(rotate ? 'rotate(90deg)' : '')}`,
-		width: !rotate && width ,
+		width,
 	}
 }
 
@@ -72,12 +87,13 @@ interface IExerciseRow {
 	date: Date
 	exercise: string
 	reps: number
+	repScheme: number[]
 	'weight (lbs)': number
 }
 
-const minMaxWeight: number[] = (data) => data.reduce((acc: number, currentVal: IExerciseRow) => {
+const minMaxWeight = (data): number[] => data.reduce((acc: number, currentVal: IExerciseRow) => {
 
-	const nextVal = [] // 93, 95.5  105.5
+	const nextVal = []
 	const thisVal = currentVal['weight (lbs)']
 	const currentMin = +(acc[0])
 	const currentMax = +(acc[1])
@@ -134,10 +150,9 @@ class SingleExercise extends React.Component<IProps, IState> {
 	render() {
 		const { data, exerciseColor } = this.props
 		const exerciseData = data[0]
-
 		const dateRange = differenceInDates(exerciseData.data)
 		const smallestDx = smallestDiff(exerciseData.data)
-		console.log('smallestDx', exerciseData.data)
+
 		return ( <BarGraphContainer>
 				<Title color={exerciseColor}>{exerciseData.name}</Title>
 				<p style={{ padding: 0, margin: 0, color: 'white'}}>{JSON.stringify(exerciseData.data)}
@@ -148,11 +163,10 @@ class SingleExercise extends React.Component<IProps, IState> {
 				    	id="default"
 							name="default"
 							value="default"
-
 							checked={this.state.viewMode === "default"}
 							onChange={() => {this.toggleMode('default')} }
 						/>
-				    <label htmlFor="default">Reps as input</label>
+				    <CheckboxLabel htmlFor="default">Reps as input</CheckboxLabel>
 
 				    <input
 				    	type="radio"
@@ -162,9 +176,10 @@ class SingleExercise extends React.Component<IProps, IState> {
 							checked={this.state.viewMode === "projected1RM"}
 							onChange={() => {this.toggleMode('projected1RM')} }
 						/>
-				    <label htmlFor="projected1RM">Projected 1RM</label>
+				    <CheckboxLabel htmlFor="projected1RM">Projected 1RM</CheckboxLabel>
 				  </div>
 				<BarGraph smallestDx={smallestDx} dateRange={dateRange}>
+					<YAxisLabel>Weight (lbs)</YAxisLabel>
 					{
 						(this.state.viewMode === 'default')
 						?
@@ -178,7 +193,7 @@ class SingleExercise extends React.Component<IProps, IState> {
 								yAxis={Y_AXIS}
 								dateRange={dateRange}
 								smallestDx={smallestDx}
-								style={{...getBarXPosition(datum, dateRange, exerciseData.data[0][0], X_AXIS, smallestDx, idx)}}
+								style={{...getBarXPosition(datum, dateRange, exerciseData.data[0][0], X_AXIS, smallestDx)}}
 							>
 							<Label>{datum['weight (lbs)']}</Label>
 							</Bar>
@@ -194,7 +209,7 @@ class SingleExercise extends React.Component<IProps, IState> {
 								yAxis={Y_AXIS}
 								dateRange={dateRange}
 								smallestDx={smallestDx}
-								style={{...getBarXPosition(datum, dateRange, exerciseData.data[0][0], X_AXIS, smallestDx, idx)}}
+								style={{...getBarXPosition(datum, dateRange, exerciseData.data[0][0], X_AXIS, smallestDx)}}
 							>
 							<Label>{calculate1RM(datum.reps, datum['weight (lbs)'])}</Label>
 							</OneRMBar>
@@ -213,7 +228,7 @@ class SingleExercise extends React.Component<IProps, IState> {
 
 
 
-const differenceInDates = (rows: IExerciseRow[]) => {
+const differenceInDates = (rows: IExerciseRow[]): number => {
 	console.log('Start moonth', Moment(rows[0].date).startOf('month'))
 	const first = (Moment(rows[0].date))
 	const last = (Moment(rows[rows.length - 1].date))
@@ -230,9 +245,9 @@ const monthMarkers = (rows: IExerciseRow[], dateRange, smallestDx) => {
 		markers.push(
 			<Marker
 				key={`${markerPoint}`}
-				style={getBarXPosition({ date: markerPoint }, dateRange, rows[0][0], X_AXIS, smallestDx, idx)}>
+				style={getBarXPosition({ date: markerPoint }, dateRange, rows[0][0], X_AXIS, smallestDx)}>
 				{Moment(markerPoint).format('MMM')}
-			</Marker>
+			</Marker>,
 		)
 		markerPoint = markerPoint.add(1, 'month')
 		idx++

@@ -1,9 +1,20 @@
+
 @font-face {
-    font-family: BaseFont;
-    src: url('./assets/teen/teen.ttf');
+  font-family: HeaderFont;
+  src: url('./assets/Montserrat/Montserrat-Regular.ttf');
+}
+
+@font-face {
+  font-family: BodyFont;
+  src: url('./assets/Lato/Lato-Regular.ttf');
+}
+
+@font-face {
+  font-family: FunFont;
+  src: url('./assets/teen/teen.ttf');
 }
 
 body {
-	font-family: 'BaseFont', sans-serif;
+	font-family: 'HeaderFont', sans-serif;
 	background-color: black;
 }
