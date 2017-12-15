@@ -16,14 +16,22 @@
     "webpack": "^3.6.0"
   },
   "devDependencies": {
+    "@types/jest": "^21.1.8",
     "@types/moment": "^2.13.0",
     "@types/ramda": "^0.25.8",
     "awesome-typescript-loader": "^3.2.3",
+    "babel-jest": "^21.2.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "jest": "^21.2.1",
     "json-loader": "^0.5.7",
+    "react-test-renderer": "^16.2.0",
     "source-map-loader": "^0.2.1",
     "typescript": "^2.5.2"
   },
   "scripts": {
-    "start": "webpack --watch && tsc --watch"
+    "start": "webpack --watch && tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch"
   }
 }
