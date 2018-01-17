@@ -44176,7 +44176,6 @@ var SingleExercise = /** @class */ (function (_super) {
         var smallestDx = smallestDiff(exerciseDataArray);
         return (React.createElement(BarGraphContainer, null,
             React.createElement(Title, { color: exerciseColor }, exerciseData.name),
-            React.createElement("p", { style: { padding: 0, margin: 0, color: 'white' } }, JSON.stringify(exerciseDataArray)),
             React.createElement("div", null,
                 React.createElement("input", { type: "radio", id: "default", name: "default", value: "default", checked: this.state.viewMode === "default", onChange: function () { _this.toggleMode('default'); } }),
                 React.createElement(CheckboxLabel, { htmlFor: "default" }, "Reps as input"),
@@ -44199,7 +44198,9 @@ var SingleExercise = /** @class */ (function (_super) {
                     :
                         exerciseDataArray.map(function (datum) { return (React.createElement(OneRMBar, { key: "" + datum.date + datum.reps, exerciseColor: exerciseColor, datum: datum, rows: exerciseDataArray, yAxis: Y_AXIS, dateRange: dateRange, smallestDx: smallestDx, style: __assign({}, getBarXPosition(datum, dateRange, exerciseDataArray[0][0], X_AXIS, smallestDx)) },
                             React.createElement(Label, null, utils_1.calculate1RM(datum.reps, datum['weight (lbs)'])))); })),
-            React.createElement(MarkerContainer, null, monthMarkers(exerciseDataArray, dateRange, smallestDx))));
+            React.createElement(MarkerContainer, null, monthMarkers(exerciseDataArray, dateRange, smallestDx)),
+            React.createElement("div", { style: { height: 300, width: 300, overflow: 'scroll', color: 'white' } },
+                React.createElement("pre", null, JSON.stringify(exerciseDataArray, null, 2)))));
     };
     return SingleExercise;
 }(React.Component));

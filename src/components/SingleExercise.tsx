@@ -164,8 +164,6 @@ class SingleExercise extends React.Component<IProps, IState> {
 
 		return ( <BarGraphContainer>
 				<Title color={exerciseColor}>{exerciseData.name}</Title>
-				<p style={{ padding: 0, margin: 0, color: 'white'}}>{JSON.stringify(exerciseDataArray)}
-				</p>
 				  <div>
 				    <input
 				    	type="radio"
@@ -242,6 +240,8 @@ class SingleExercise extends React.Component<IProps, IState> {
 						monthMarkers(exerciseDataArray, dateRange, smallestDx)
 					}
 				</MarkerContainer>
+				<div style={{ height: 300,width: 300, overflow: 'scroll', color: 'white'}}><pre>{JSON.stringify(exerciseDataArray, null, 2)}</pre>
+				</div>
 			</BarGraphContainer>
 		)
 	}
