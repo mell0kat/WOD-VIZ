@@ -62,7 +62,7 @@ export class Main extends React.Component<any, IState> {
 						/>
 					}
 				</div>
-				<RawData/>
+				{/* <RawData/> */}
 			</div>
 		</ReactGoogleSheetConnector>
 		)

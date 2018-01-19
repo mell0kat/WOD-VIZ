@@ -49,16 +49,30 @@ export const wordToRGBStringDarkened = (word: string): string => {
 	return `rgb(${wordToColor(word, RGB.r, true)},${wordToColor(word, RGB.g, true)},${wordToColor(word, RGB.b, true)})`
 }
 
+export const formatReps = (repString: string): [number, any] => {
+	const matrix = repString.split('*')
+	const times = +matrix[0]
+	const complex = matrix[1]
+	return [times, complex]
+}
+
 const brzyckiFormulaCoefficients = [0, 1, 1.029, 1.059, 1.091, 1.125,
 1.161, 1.200, 1.242, 1.286, 1.330]
 
 // The Brzycki Formula
 export const calculate1RM = (reps: number, weight: number) => {
-	const coeff = brzyckiFormulaCoefficients[reps]
+	const formattedReps = typeof reps === 'number' ? reps : formatReps(reps)[0]
+	const coeff = brzyckiFormulaCoefficients[formattedReps]
 	if (!coeff) {
-		console.error(`Formula has not been set up to handle ${reps} reps`)
-		return weight
+		console.error(`Formula has not been set up to handle ${formattedReps} reps`)
+		return undefined
 	} else {
 		return Math.floor(coeff * weight)
 	}
 }
+
+export const coerceToNumbers = (items: any[]) => items.map((item) => ({
+	...item,
+	reps: +item.reps || item.reps,
+	'weight (lbs)': +item['weight (lbs)'],
+}))
