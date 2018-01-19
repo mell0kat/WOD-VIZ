@@ -11,16 +11,19 @@ interface IProps {
 	data: any[]
 }
 
-const Button = styled.button`
+const Button = styled.div`
 	font-family: BodyFont;
 	background-color: transparent;
 	border-radius: 5px;
-	border-width: 2px;
-	padding: 3px;
-	margin-bottom: 3px;
-	border-color:${props => props.color};
+	padding: 0.25rem;
+	margin-bottom: 0.5rem;
+	border:2px solid ${props => props.color};
 	color:${props => props.color};
-	font-size: 14px;
+	cursor: pointer;
+	&:hover {
+		background-color: ${props => props.color};
+		color: black;
+	}
 `
 
 const ExerciseMenu = (props: IProps) => {

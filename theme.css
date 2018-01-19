@@ -14,7 +14,23 @@
   src: url('./assets/teen/teen.ttf');
 }
 
+html {
+	font-size: 14px;
+}
+
 body {
 	font-family: 'HeaderFont', sans-serif;
 	background-color: black;
+	padding: 1rem;
+}
+
+@keyframes appear {
+	from {
+		height: 0;
+		opacity: 0;
+	}
+	to {
+		height: 400px;
+		opacity: 1;
+	}
 }

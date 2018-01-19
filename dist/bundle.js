@@ -41286,7 +41286,6 @@ var ReactGoogleSheetConnector = __webpack_require__(27);
 var react_google_sheet_connector_1 = __webpack_require__(27);
 var ExerciseMenu_1 = __webpack_require__(325);
 var SingleExercise_1 = __webpack_require__(333);
-var RawData_1 = __webpack_require__(336);
 var Main = /** @class */ (function (_super) {
     __extends(Main, _super);
     function Main() {
@@ -41315,8 +41314,7 @@ var Main = /** @class */ (function (_super) {
                 React.createElement("div", { style: { flexDirection: 'row', display: 'flex' } },
                     React.createElement(react_google_sheet_connector_1.GoogleSheet, { child: ExerciseMenu_1.default, sheetName: "PartA", group: "Exercise", swapExercise: this.swapExercise, swapFeaturedColor: this.swapFeaturedColor }),
                     this.state.filter &&
-                        React.createElement(react_google_sheet_connector_1.GoogleSheet, { child: SingleExercise_1.default, sheetName: "PartA", group: "Exercise", sort: "Date", filter: this.state.filter, swapExercise: this.swapExercise, exerciseColor: this.state.exerciseColor })),
-                React.createElement(RawData_1.default, null))));
+                        React.createElement(react_google_sheet_connector_1.GoogleSheet, { child: SingleExercise_1.default, sheetName: "PartA", group: "Exercise", sort: "Date", filter: this.state.filter, swapExercise: this.swapExercise, exerciseColor: this.state.exerciseColor })))));
     };
     return Main;
 }(React.Component));
@@ -42223,7 +42221,7 @@ var React = __webpack_require__(13);
 var styled_components_1 = __webpack_require__(92);
 var react_google_sheet_connector_1 = __webpack_require__(27);
 var utils_1 = __webpack_require__(93);
-var Button = (_a = ["\n\tfont-family: BodyFont;\n\tbackground-color: transparent;\n\tborder-radius: 5px;\n\tborder-width: 2px;\n\tpadding: 3px;\n\tmargin-bottom: 3px;\n\tborder-color:", ";\n\tcolor:", ";\n\tfont-size: 14px;\n"], _a.raw = ["\n\tfont-family: BodyFont;\n\tbackground-color: transparent;\n\tborder-radius: 5px;\n\tborder-width: 2px;\n\tpadding: 3px;\n\tmargin-bottom: 3px;\n\tborder-color:", ";\n\tcolor:", ";\n\tfont-size: 14px;\n"], styled_components_1.default.button(_a, function (props) { return props.color; }, function (props) { return props.color; }));
+var Button = (_a = ["\n\tfont-family: BodyFont;\n\tbackground-color: transparent;\n\tborder-radius: 5px;\n\tpadding: 0.25rem;\n\tmargin-bottom: 0.5rem;\n\tborder:2px solid ", ";\n\tcolor:", ";\n\tcursor: pointer;\n\t&:hover {\n\t\tbackground-color: ", ";\n\t\tcolor: black;\n\t}\n"], _a.raw = ["\n\tfont-family: BodyFont;\n\tbackground-color: transparent;\n\tborder-radius: 5px;\n\tpadding: 0.25rem;\n\tmargin-bottom: 0.5rem;\n\tborder:2px solid ", ";\n\tcolor:", ";\n\tcursor: pointer;\n\t&:hover {\n\t\tbackground-color: ", ";\n\t\tcolor: black;\n\t}\n"], styled_components_1.default.div(_a, function (props) { return props.color; }, function (props) { return props.color; }, function (props) { return props.color; }));
 var ExerciseMenu = function (props) {
     return (React.createElement("div", { style: styles.container }, props.data.map(function (exerciseItem) {
         var color = utils_1.wordToRGBString(exerciseItem.name);
@@ -44105,7 +44103,7 @@ var utils_1 = __webpack_require__(93);
 var X_AXIS = 450;
 var Y_AXIS = 250;
 var BarGraph = (_a = ["\n\twidth: ", "px;\n\theight: ", "px;\n\tborder-left: white 2px solid;\n\tborder-bottom: white 2px solid;\n\talign-self: center;\n\tdisplay: flex;\n\talign-items: flex-end;\n\tposition: relative;\n\tpadding-right: ", "px\n"], _a.raw = ["\n\twidth: ", "px;\n\theight: ", "px;\n\tborder-left: white 2px solid;\n\tborder-bottom: white 2px solid;\n\talign-self: center;\n\tdisplay: flex;\n\talign-items: flex-end;\n\tposition: relative;\n\tpadding-right: ", "px\n"], styled_components_1.default.div(_a, X_AXIS, Y_AXIS, function (props) { return (props.smallestDx / props.dateRange * X_AXIS); }));
-var CheckboxLabel = (_b = ["\n\tcolor: white;\n\tfont-family: HeaderFont;\n"], _b.raw = ["\n\tcolor: white;\n\tfont-family: HeaderFont;\n"], styled_components_1.default.span(_b));
+var CheckboxLabel = (_b = ["\n\tcolor: white;\n\tfont-family: HeaderFont;\n\tmargin-right: 1rem;\n"], _b.raw = ["\n\tcolor: white;\n\tfont-family: HeaderFont;\n\tmargin-right: 1rem;\n"], styled_components_1.default.span(_b));
 var Title = (_c = ["\n\tfont-size: 24px;\n\tfont-family: HeaderFont;\n\tcolor: ", ";\n"], _c.raw = ["\n\tfont-size: 24px;\n\tfont-family: HeaderFont;\n\tcolor: ", ";\n"], styled_components_1.default.p(_c, function (props) { return props.color; }));
 var Label = (_d = ["\n\tfont-size: 8px;\n\ttext-align: center;\n\tcolor: white;\n\twidth: 30px;\n\tz-index: 100;\n"], _d.raw = ["\n\tfont-size: 8px;\n\ttext-align: center;\n\tcolor: white;\n\twidth: 30px;\n\tz-index: 100;\n"], styled_components_1.default.text(_d));
 var LabelColumn = (_e = ["\n\tdisplay: flex;\n\tflex-direction: column;\n\tposition: relative;\n"], _e.raw = ["\n\tdisplay: flex;\n\tflex-direction: column;\n\tposition: relative;\n"], styled_components_1.default.div(_e));
@@ -44114,9 +44112,10 @@ var OneRMBar = (_g = ["\n\theight: ", "px;\n"], _g.raw = ["\n\theight: ", "px;\n
 var BarGraphContainer = (_h = ["\n\tflex: 1;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n"], _h.raw = ["\n\tflex: 1;\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: center;\n"], styled_components_1.default.div(_h));
 var MarkerContainer = (_j = ["\n\twidth: ", "px;\n\tposition: relative;\n"], _j.raw = ["\n\twidth: ", "px;\n\tposition: relative;\n"], styled_components_1.default.div(_j, X_AXIS));
 var Marker = (_k = ["\n\tcolor: white;\n\tfontsize: 12;\n\tdisplay: inline-block;\n\tposition: absolute;\n"], _k.raw = ["\n\tcolor: white;\n\tfontsize: 12;\n\tdisplay: inline-block;\n\tposition: absolute;\n"], styled_components_1.default.text(_k));
-var YAxisLabel = (_l = ["\n\ttransform: rotate(270deg);\n\tcolor: white;\n\tposition: relative;\n\tright: 70px;\n\tbottom: ", "px;\n"], _l.raw = ["\n\ttransform: rotate(270deg);\n\tcolor: white;\n\tposition: relative;\n\tright: 70px;\n\tbottom: ", "px;\n"], styled_components_1.default.p(_l, Y_AXIS / 3));
+var YAxisLabel = (_l = ["\n\ttransform: rotate(270deg);\n\tcolor: white;\n\tposition: relative;\n\tright: 70px;\n\tbottom: ", "px;\n\n"], _l.raw = ["\n\ttransform: rotate(270deg);\n\tcolor: white;\n\tposition: relative;\n\tright: 70px;\n\tbottom: ", "px;\n\n"], styled_components_1.default.p(_l, Y_AXIS / 3));
+var RevealRawData = (_m = ["\n\tcolor: ", ";\n\tmargin-top: 100px;\n\tcursor: pointer;\n"], _m.raw = ["\n\tcolor: ", ";\n\tmargin-top: 100px;\n\tcursor: pointer;\n"], styled_components_1.default.p(_m, function (props) { return props.exerciseColor; }));
+var RawData = (_o = ["\n\tanimation: appear 3s;\n\tcolor: ", ";\n\tborder: 1px solid ", ";\n\theight: 400px;\n\toverflow: scroll;\n\tpadding: 1 rem;\n\tmargin-top: 100px;\n"], _o.raw = ["\n\tanimation: appear 3s;\n\tcolor: ", ";\n\tborder: 1px solid ", ";\n\theight: 400px;\n\toverflow: scroll;\n\tpadding: 1 rem;\n\tmargin-top: 100px;\n"], styled_components_1.default.div(_o, function (props) { return props.exerciseColor; }, function (props) { return props.exerciseColor; }));
 var getBarXPosition = function (datum, dateRange, minDate, _x, smallestDx) {
-    console.log(datum, minDate, dateRange, _x);
     var dx = (dateRange === 0) ? (_x / 2) : ((Moment(datum.date) - Moment(minDate)) / dateRange) * _x;
     var width = (smallestDx / dateRange) * _x * .75;
     return {
@@ -44155,31 +44154,31 @@ var SingleExercise = /** @class */ (function (_super) {
     __extends(SingleExercise, _super);
     function SingleExercise() {
         var _this = _super.call(this) || this;
+        _this.toggleMode = function (mode) { return function () {
+            _this.setState({
+                viewMode: mode,
+            });
+        }; };
+        _this.toggleRawDataRevealed = function () { return _this.setState({ rawDataRevealed: !_this.state.rawDataRevealed }); };
         _this.state = {
             viewMode: 'default',
+            rawDataRevealed: false,
         };
-        _this.toggleMode = _this.toggleMode.bind(_this);
         return _this;
     }
-    SingleExercise.prototype.toggleMode = function (mode) {
-        this.setState({
-            viewMode: mode,
-        });
-    };
     SingleExercise.prototype.render = function () {
         var _this = this;
         var _a = this.props, data = _a.data, exerciseColor = _a.exerciseColor;
         var exerciseData = data[0];
         var exerciseDataArray = utils_1.coerceToNumbers(exerciseData.data);
-        console.log('exerciseData', exerciseDataArray);
         var dateRange = differenceInDates(exerciseDataArray);
         var smallestDx = smallestDiff(exerciseDataArray);
         return (React.createElement(BarGraphContainer, null,
             React.createElement(Title, { color: exerciseColor }, exerciseData.name),
             React.createElement("div", null,
-                React.createElement("input", { type: "radio", id: "default", name: "default", value: "default", checked: this.state.viewMode === "default", onChange: function () { _this.toggleMode('default'); } }),
+                React.createElement("input", { type: "radio", id: "default", name: "default", value: "default", checked: this.state.viewMode === "default", onChange: this.toggleMode('default') }),
                 React.createElement(CheckboxLabel, { htmlFor: "default" }, "Reps as input"),
-                React.createElement("input", { type: "radio", id: "projected1RM", name: "projected1RM", value: "phone", checked: this.state.viewMode === "projected1RM", onChange: function () { _this.toggleMode('projected1RM'); } }),
+                React.createElement("input", { type: "radio", id: "projected1RM", name: "projected1RM", value: "phone", checked: this.state.viewMode === "projected1RM", onChange: this.toggleMode('projected1RM') }),
                 React.createElement(CheckboxLabel, { htmlFor: "projected1RM" }, "Projected 1RM")),
             React.createElement(BarGraph, { smallestDx: smallestDx, dateRange: dateRange },
                 React.createElement(YAxisLabel, null, "Weight (lbs)"),
@@ -44199,13 +44198,18 @@ var SingleExercise = /** @class */ (function (_super) {
                         exerciseDataArray.map(function (datum) { return (React.createElement(OneRMBar, { key: "" + datum.date + datum.reps, exerciseColor: exerciseColor, datum: datum, rows: exerciseDataArray, yAxis: Y_AXIS, dateRange: dateRange, smallestDx: smallestDx, style: __assign({}, getBarXPosition(datum, dateRange, exerciseDataArray[0][0], X_AXIS, smallestDx)) },
                             React.createElement(Label, null, utils_1.calculate1RM(datum.reps, datum['weight (lbs)'])))); })),
             React.createElement(MarkerContainer, null, monthMarkers(exerciseDataArray, dateRange, smallestDx)),
-            React.createElement("div", { style: { height: 300, width: 300, overflow: 'scroll', color: 'white' } },
-                React.createElement("pre", null, JSON.stringify(exerciseDataArray, null, 2)))));
+            this.state.rawDataRevealed
+                ?
+                    React.createElement(RawData, { exerciseColor: exerciseColor },
+                        React.createElement("pre", { style: { margin: 'auto 0', padding: '1rem' } },
+                            "\t",
+                            JSON.stringify(exerciseDataArray, null, 2)))
+                :
+                    React.createElement(RevealRawData, { exerciseColor: exerciseColor, onClick: this.toggleRawDataRevealed }, " Reveal Raw Data (JSON) ")));
     };
     return SingleExercise;
 }(React.Component));
 var differenceInDates = function (rows) {
-    console.log('Start moonth', Moment(rows[0].date).startOf('month'));
     var first = (Moment(rows[0].date));
     var last = (Moment(rows[rows.length - 1].date));
     return (last - first);
@@ -44235,7 +44239,7 @@ var smallestDiff = function (rows) { return rows.reduce(function (acc, currentVa
     }
 }, Infinity); };
 exports.default = react_google_sheet_connector_1.connectToSpreadsheet(SingleExercise);
-var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l;
+var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
 
 
 /***/ }),
@@ -44523,20 +44527,6 @@ webpackContext.keys = function webpackContextKeys() {
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
 webpackContext.id = 335;
-
-/***/ }),
-/* 336 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var React = __webpack_require__(13);
-var react_google_sheet_connector_1 = __webpack_require__(27);
-exports.default = function () { return (React.createElement("div", null,
-    React.createElement("p", null, "Raw Data"),
-    React.createElement(react_google_sheet_connector_1.GoogleTable, { sheetName: "PartA" }))); };
-
 
 /***/ })
 /******/ ]);

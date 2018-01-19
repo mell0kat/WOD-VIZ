@@ -22,6 +22,7 @@ const BarGraph = styled.div`
 const CheckboxLabel = styled.span`
 	color: white;
 	font-family: HeaderFont;
+	margin-right: 1rem;
 `
 const Title = styled.p`
 	font-size: 24px;
@@ -78,10 +79,25 @@ const YAxisLabel = styled.p`
 	position: relative;
 	right: 70px;
 	bottom: ${Y_AXIS / 3}px;
+
+`
+const RevealRawData = styled.p`
+	color: ${props => props.exerciseColor};
+	margin-top: 100px;
+	cursor: pointer;
+`
+
+const RawData = styled.div`
+	animation: appear 3s;
+	color: ${props => props.exerciseColor};
+	border: 1px solid ${props => props.exerciseColor};
+	height: 400px;
+	overflow: scroll;
+	padding: 1 rem;
+	margin-top: 100px;
 `
 
 const getBarXPosition = (datum, dateRange, minDate, _x, smallestDx) => {
-	console.log(datum, minDate, dateRange, _x)
 	const dx: number = (dateRange === 0) ? (_x / 2) : ((Moment(datum.date) - Moment(minDate)) / dateRange) * _x
 	const width: number = (smallestDx / dateRange) * _x *.75
 	return {
@@ -139,6 +155,7 @@ interface IProps {
 
 interface IState {
 	viewMode: 'projected1RM' | 'default'
+	rawDataRevealed: boolean
 }
 
 class SingleExercise extends React.Component<IProps, IState> {
@@ -146,19 +163,22 @@ class SingleExercise extends React.Component<IProps, IState> {
 		super()
 		this.state = {
 			viewMode: 'default',
+			rawDataRevealed: false,
 		}
-		this.toggleMode = this.toggleMode.bind(this)
 	}
-	toggleMode(mode) {
+
+	toggleMode = (mode) => () => {
 		this.setState({
 			viewMode: mode,
 		})
 	}
+
+	toggleRawDataRevealed = () => this.setState({ rawDataRevealed: !this.state.rawDataRevealed })
+
 	render() {
 		const { data, exerciseColor } = this.props
 		const exerciseData = data[0]
 		const exerciseDataArray = coerceToNumbers(exerciseData.data)
-		console.log('exerciseData', exerciseDataArray)
 		const dateRange = differenceInDates(exerciseDataArray)
 		const smallestDx = smallestDiff(exerciseDataArray)
 
@@ -171,7 +191,7 @@ class SingleExercise extends React.Component<IProps, IState> {
 							name="default"
 							value="default"
 							checked={this.state.viewMode === "default"}
-							onChange={() => {this.toggleMode('default')} }
+							onChange={this.toggleMode('default')}
 						/>
 				    <CheckboxLabel htmlFor="default">Reps as input</CheckboxLabel>
 
@@ -181,7 +201,7 @@ class SingleExercise extends React.Component<IProps, IState> {
 							name="projected1RM"
 							value="phone"
 							checked={this.state.viewMode === "projected1RM"}
-							onChange={() => {this.toggleMode('projected1RM')} }
+							onChange={this.toggleMode('projected1RM')}
 						/>
 				    <CheckboxLabel htmlFor="projected1RM">Projected 1RM</CheckboxLabel>
 				  </div>
@@ -240,8 +260,17 @@ class SingleExercise extends React.Component<IProps, IState> {
 						monthMarkers(exerciseDataArray, dateRange, smallestDx)
 					}
 				</MarkerContainer>
-				<div style={{ height: 300,width: 300, overflow: 'scroll', color: 'white'}}><pre>{JSON.stringify(exerciseDataArray, null, 2)}</pre>
-				</div>
+				{
+					this.state.rawDataRevealed
+					?
+					<	RawData exerciseColor={exerciseColor}><pre style={{margin: 'auto 0', padding: '1rem'}}>	{JSON.stringify(exerciseDataArray, null, 2)}</pre>
+						</RawData>
+
+					:
+					<RevealRawData
+					exerciseColor={exerciseColor}
+					onClick={this.toggleRawDataRevealed}> Reveal Raw Data (JSON) </RevealRawData>
+				}
 			</BarGraphContainer>
 		)
 	}
@@ -250,7 +279,6 @@ class SingleExercise extends React.Component<IProps, IState> {
 
 
 const differenceInDates = (rows: IExerciseRow[]): number => {
-	console.log('Start moonth', Moment(rows[0].date).startOf('month'))
 	const first = (Moment(rows[0].date))
 	const last = (Moment(rows[rows.length - 1].date))
 	return (last - first)
